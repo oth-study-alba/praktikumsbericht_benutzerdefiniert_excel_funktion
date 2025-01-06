@@ -1,0 +1,61 @@
+=LAMBDA(
+    tabelle_produktlinie_verteilung, 
+    tabelle_filter, 
+    tabelle_prognose,
+    MAKEARRAY(
+        ANZAHL2(INDEX(tabelle_produktlinie_verteilung, , 1)) + 1,
+        ANZAHL2(INDEX(tabelle_prognose, , 1)) + 1,
+        LAMBDA(zeile_produktlinie, spalte_jahr_ae,
+            WENN(
+                (zeile_produktlinie = 1) * (spalte_jahr_ae = 1), 
+                "",
+                WENN(
+                    zeile_produktlinie = 1,
+                    INDEX(tabelle_prognose, spalte_jahr_ae - 1, 1) + 1,
+                    WENN(
+                        spalte_jahr_ae = 1,
+                        INDEX(tabelle_produktlinie_verteilung, zeile_produktlinie - 1, 1),
+                        SUMMENPRODUKT(
+                            INDEX(
+                                INDEX(
+                                    tabelle_prognose,
+                                    SEQUENZ(ANZAHL2(INDEX(tabelle_prognose, , 1))),
+                                    SEQUENZ(1, 4, 2)
+                                ),
+                                XVERGLEICH(
+                                    INDEX(tabelle_prognose, spalte_jahr_ae - 1, 1),
+                                    INDEX(tabelle_prognose, 0, 1)
+                                ),
+                                0
+                            ),
+                            INDEX(
+                                INDEX(
+                                    tabelle_produktlinie_verteilung,
+                                    SEQUENZ(ANZAHL2(INDEX(tabelle_produktlinie_verteilung, , 1))),
+                                    SEQUENZ(1, 4, 2)
+                                ),
+                                XVERGLEICH(
+                                    INDEX(tabelle_produktlinie_verteilung, zeile_produktlinie - 1, 1),
+                                    INDEX(tabelle_produktlinie_verteilung, 0, 1)
+                                ),
+                                0
+                            ) *
+                            INDEX(
+                                INDEX(
+                                    tabelle_filter,
+                                    SEQUENZ(ANZAHL2(INDEX(tabelle_filter, , 1))),
+                                    SEQUENZ(1, 1, 2)
+                                ),
+                                XVERGLEICH(
+                                    INDEX(tabelle_produktlinie_verteilung, zeile_produktlinie - 1, 1),
+                                    INDEX(tabelle_filter, 0, 1)
+                                ),
+                                0
+                            ) / 10000
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
