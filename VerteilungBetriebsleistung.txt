@@ -1,7 +1,7 @@
 =LAMBDA(
     tabelle_produktlinie_verteilung, 
-    tabelle_filter, 
     tabelle_prognose,
+    tabelle_filter, 
     MAKEARRAY(
         ANZAHL2(INDEX(tabelle_produktlinie_verteilung, , 1)) + 1,
         ANZAHL2(INDEX(tabelle_prognose, , 1)) + 1,
